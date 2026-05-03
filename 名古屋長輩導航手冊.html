@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>名古屋五日 長輩導航手冊 🗾</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+  :root {
+    --green: #1D9E75;
+    --green-dark: #0F6E56;
+    --green-light: #E1F5EE;
+    --green-mid: #9FE1CB;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --red: #A32D2D;
+    --red-light: #FCEBEB;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --pink-light: #FBEAF0;
+    --pink: #993556;
+    --gray-bg: #F7F6F3;
+    --gray-card: #FFFFFF;
+    --gray-border: rgba(0,0,0,0.1);
+    --gray-text: #444;
+    --gray-muted: #888;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--gray-bg);
+    color: var(--gray-text);
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto;
+    padding-bottom: 90px;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    background: linear-gradient(145deg, var(--green) 0%, var(--green-dark) 100%);
+    padding: 28px 20px 24px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -50px; left: -20px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .hero-flag { font-size: 36px; margin-bottom: 6px; }
+  .hero h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .hero .sub { font-size: 13px; opacity: 0.85; margin-bottom: 14px; }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hero-badge {
+    background: rgba(255,255,255,0.18);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    background: white;
+    border-top: 1px solid var(--gray-border);
+    display: flex;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 10px 4px 12px;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+    transition: all 0.15s;
+    -webkit-appearance: none;
+  }
+  .nav-btn .nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
+  .nav-btn .nav-label { font-size: 11px; color: var(--gray-muted); }
+  .nav-btn.active .nav-icon { filter: none; }
+  .nav-btn.active .nav-label { color: var(--green); font-weight: 700; }
+  .nav-btn.active { position: relative; }
+  .nav-btn.active::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 20%; right: 20%;
+    height: 3px;
+    background: var(--green);
+    border-radius: 0 0 3px 3px;
+  }
+
+  /* ── PANELS ── */
+  .panel { display: none; padding: 16px; }
+  .panel.active { display: block; }
+
+  /* ── DAY SELECTOR ── */
+  .day-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin-bottom: 16px;
+    scrollbar-width: none;
+  }
+  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tab {
+    flex-shrink: 0;
+    background: white;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--gray-muted);
+    transition: all 0.15s;
+  }
+  .day-tab.active {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+
+  .day-hero {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    border-left: 5px solid var(--green);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .day-num { font-size: 28px; font-weight: 700; color: var(--green); min-width: 64px; }
+  .day-title-text { font-size: 18px; font-weight: 700; }
+  .day-date { font-size: 13px; color: var(--gray-muted); margin-top: 2px; }
+
+  /* ── ITINERARY CARDS ── */
+  .it-card {
+    background: white;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .it-top {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--gray-border);
+  }
+  .it-time {
+    background: var(--gray-bg);
+    padding: 14px 10px;
+    text-align: center;
+    min-width: 68px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--gray-border);
+  }
+  .it-time-label { font-size: 10px; color: var(--gray-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  .it-time-val { font-size: 16px; font-weight: 700; }
+  .it-title-area { padding: 14px; flex: 1; }
+  .it-name { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+  .it-sub { font-size: 13px; color: var(--gray-muted); }
+  .it-body { padding: 14px; }
+
+  .info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .info-row.full { grid-template-columns: 1fr; }
+  .info-box {
+    background: var(--gray-bg);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .info-box-label { font-size: 11px; color: var(--gray-muted); margin-bottom: 3px; }
+  .info-box-val { font-size: 13px; line-height: 1.5; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .tag {
+    border-radius: 12px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .tag-green { background: var(--green-light); color: var(--green-dark); }
+  .tag-blue  { background: var(--blue-light);  color: var(--blue); }
+  .tag-amber { background: var(--amber-light); color: var(--amber); }
+  .tag-pink  { background: var(--pink-light);  color: var(--pink); }
+  .tag-gray  { background: #F1EFE8; color: #444; }
+
+  .map-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    border: 1.5px solid var(--green-mid);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .map-link:active { background: var(--green-mid); transform: scale(0.98); }
+
+  /* ── USAGE GUIDE ── */
+  .usage-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .usage-num {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--green);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .usage-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .usage-desc { font-size: 14px; color: var(--gray-muted); line-height: 1.7; }
+
+  /* ── EMERGENCY ── */
+  .sos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .sos-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px 12px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .sos-jp { font-size: 20px; font-weight: 700; color: var(--red); margin-bottom: 4px; }
+  .sos-zh { font-size: 14px; color: var(--gray-text); margin-bottom: 3px; }
+  .sos-ro { font-size: 11px; color: var(--gray-muted); font-style: italic; }
+
+  .red-box {
+    background: var(--red-light);
+    border: 1px solid #F09595;
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  .red-box h3 { font-size: 16px; font-weight: 700; color: var(--red); margin-bottom: 14px; }
+  .step-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+  .step-dot {
+    width: 28px; height: 28px;
+    background: var(--red);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-text { font-size: 14px; line-height: 1.65; padding-top: 3px; color: #501313; }
+
+  .hotel-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .hotel-box h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .hotel-label { font-size: 11px; color: var(--gray-muted); margin-bottom: 4px; }
+  .hotel-addr { font-size: 15px; line-height: 1.5; }
+  .hotel-jp { font-size: 18px; font-weight: 700; color: var(--red); line-height: 1.5; }
+  .hotel-divider { border: none; border-top: 1px solid var(--gray-border); margin: 12px 0; }
+
+  .tel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .tel-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .tel-num { font-size: 28px; font-weight: 700; color: var(--red); }
+  .tel-desc { font-size: 13px; color: var(--gray-muted); margin-top: 4px; }
+
+  /* ── TIPS ── */
+  .tip-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 5px solid var(--amber);
+  }
+  .tip-header { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+  .tip-icon { font-size: 28px; }
+  .tip-title { font-size: 16px; font-weight: 700; }
+  .tip-desc { font-size: 14px; color: var(--gray-muted); line-height: 1.75; }
+  .tip-highlight {
+    background: var(--amber-light);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--amber);
+    font-weight: 500;
+    margin-top: 10px;
+  }
+
+  .green-box {
+    background: var(--green-light);
+    border: 1px solid var(--green-mid);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-top: 4px;
+  }
+  .green-box h3 { font-size: 15px; font-weight: 700; color: var(--green-dark); margin-bottom: 8px; }
+  .green-box p { font-size: 14px; color: var(--green-dark); line-height: 1.75; }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--gray-text);
+  }
+
+  hr.sep { border: none; border-top: 1px solid var(--gray-border); margin: 20px 0; }
+
+  .notice-bar {
+    background: var(--amber-light);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--amber);
+    font-weight: 500;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-flag">🗾</div>
+  <h1>名古屋五日 長輩導航手冊</h1>
+  <p class="sub">2026年4月14日（二）～ 4月18日（六）· 國泰航空 CX530/531</p>
+  <div class="hero-badges">
+    <span class="hero-badge">✈ 桃園 → 名古屋 11:30 起飛</span>
+    <span class="hero-badge">🏨 名古屋 Garland Hotel</span>
+    <span class="hero-badge">📱 已有SIM卡</span>
+  </div>
+</div>
+
+<!-- ══════════ PANEL: 行程 ══════════ -->
+<div id="panel-schedule" class="panel active">
+  <div class="day-tabs" id="dayTabs">
+    <button class="day-tab active" onclick="switchDay(0,this)">Day 1</button>
+    <button class="day-tab" onclick="switchDay(1,this)">Day 2</button>
+    <button class="day-tab" onclick="switchDay(2,this)">Day 3</button>
+    <button class="day-tab" onclick="switchDay(3,this)">Day 4</button>
+    <button class="day-tab" onclick="switchDay(4,this)">Day 5</button>
+  </div>
+
+  <!-- DAY 1 -->
+  <div class="day-content" id="day-0">
+    <div class="day-hero">
+      <div class="day-num">Day 1</div>
+      <div>
+        <div class="day-title-text">抵達！慶生之夜 🎂</div>
+        <div class="day-date">4月14日（星期二）</div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">出發</div><div class="it-time-val">上午</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🛫 桃園機場出發</div>
+          <div class="it-sub">國泰航空 CX530・11:30 起飛</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">幾點到機場</div><div class="info-box-val">8:30 前抵達，辦行李託運</div></div>
+          <div class="info-box"><div class="info-box-label">接送</div><div class="info-box-val">已預約家裡→機場接送</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-blue">✓ 機場有廁所</span>
+          <span class="tag tag-green">✓ 候機室有椅子</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">抵達</div><div class="it-time-val">下午</div></div>
+        <div class="it-title-area">
+          <div class="it-name">✈ 中部機場→飯店</div>
+          <div class="it-sub">15:30 落地・預計 17:30 到飯店</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row full">
+          <div class="info-box">
+            <div class="info-box-label">交通怎麼辦（3步驟）</div>
+            <div class="info-box-val">① 搭「名鐵μSky 藍色特急」→ 金山站（24分）<br>② 轉地鐵名城線 → 榮站（7分）<br>③ 沿大路走10分鐘到飯店</div>
+          </div>
+        </div>
+        <div class="info-row full">
+          <div class="info-box">
+            <div class="info-box-label">飯店日文地址（可指給計程車司機看）</div>
+            <div class="info-box-val" style="font-size:15px;font-weight:700;color:var(--red);">名古屋市中区栄3-9-6 ガーランドホテル</div>
+          </div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-gray">步行約10分</span>
+          <span class="tag tag-blue">✓ 站內有廁所</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=名古屋ガーランドホテル栄3-9-6" target="_blank">📍 點我導航至飯店</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">晚餐</div><div class="it-time-val">18:30</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🐟 鰻魚三吃・しら河</div>
+          <div class="it-sub">名古屋必吃・栄ガスビル地下1樓</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">交通怎麼辦</div><div class="info-box-val">從飯店步行約8分鐘</div></div>
+          <div class="info-box"><div class="info-box-label">重要提醒</div><div class="info-box-val">不能預訂，需現場等候或網路抽號碼牌</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-pink">招牌：鰻魚三吃</span>
+          <span class="tag tag-green">✓ 室內有椅子</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=しら河栄ガスビル店+名古屋" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">晚上</div><div class="it-time-val">20:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🎂 HARBS取蛋糕→飯店慶生</div>
+          <div class="it-sub">ラシック百貨2樓・水果千層蛋糕（已預訂）</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">交通怎麼辦</div><div class="info-box-val">從しら河走路約5分鐘到ラシック百貨</div></div>
+          <div class="info-box"><div class="info-box-label">⚠️ 重要提醒</div><div class="info-box-val">最晚 19:00 前要去取蛋糕！</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-amber">已預訂蛋糕</span>
+          <span class="tag tag-green">✓ 百貨有電梯</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=HARBS+ラシック名古屋" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day-content" id="day-1" style="display:none">
+    <div class="day-hero">
+      <div class="day-num">Day 2</div>
+      <div>
+        <div class="day-title-text">鈴鹿賽道樂園 🏎</div>
+        <div class="day-date">4月15日（星期三）</div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">早餐</div><div class="it-time-val">早上</div></div>
+        <div class="it-title-area">
+          <div class="it-name">☕ 早餐・コメダ珈琲</div>
+          <div class="it-sub">名古屋著名早餐咖啡館・小倉吐司</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row full">
+          <div class="info-box"><div class="info-box-label">說明</div><div class="info-box-val">在榮商圈附近找コメダ珈琲（日文招牌），點早餐套餐（含厚吐司+水煮蛋）</div></div>
+        </div>
+        <div class="tags"><span class="tag tag-pink">招牌：小倉吐司套餐</span></div>
+        <a class="map-link" href="https://maps.google.com/maps?q=コメダ珈琲+栄+名古屋" target="_blank">📍 搜尋附近コメダ</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">出發</div><div class="it-time-val">8:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🚉 前往鈴鹿賽道樂園</div>
+          <div class="it-sub">搭地鐵+近鐵+公車，共約1.5小時</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row full">
+          <div class="info-box">
+            <div class="info-box-label">交通怎麼辦（3步驟）</div>
+            <div class="info-box-val">① 榮站搭地鐵東山線 → 名古屋站（5分）<br>② 名古屋站搭「近鐵特急」→ 白子站（50分）<br>③ 白子站搭公車 or 計程車 → 樂園（15分）</div>
+          </div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-amber">近鐵特急需另購票</span>
+          <span class="tag tag-blue">✓ 站內有廁所</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">整天</div><div class="it-time-val">10:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🏎 鈴鹿賽道樂園</div>
+          <div class="it-sub">F1賽場主題樂園・10:00開門・16:00前離開</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">午餐</div><div class="info-box-val">園內有餐廳，不需出去，指圖片點餐</div></div>
+          <div class="info-box"><div class="info-box-label">重要提醒</div><div class="info-box-val">門票已購。走累了隨時找椅子坐</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-amber">門票已購</span>
+          <span class="tag tag-blue">✓ 多處廁所</span>
+          <span class="tag tag-green">✓ 到處有椅子</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=鈴鹿サーキット遊園地" target="_blank">📍 點我看地圖</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">晚餐</div><div class="it-time-val">18:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🍜 名古屋車站晚餐</div>
+          <div class="it-sub">うまいもん通り地下商店街</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">推薦選擇</div><div class="info-box-val">まるは食堂（炸蝦）或山本屋本店（味噌烏龍麵）</div></div>
+          <div class="info-box"><div class="info-box-label">交通怎麼辦</div><div class="info-box-val">白子站搭近鐵回名古屋，商店街在站內地下</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-pink">不需預訂</span>
+          <span class="tag tag-blue">✓ 商店街有廁所</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=名古屋駅うまいもん通り" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 3 -->
+  <div class="day-content" id="day-2" style="display:none">
+    <div class="day-hero">
+      <div class="day-num">Day 3</div>
+      <div>
+        <div class="day-title-text">名古屋城＋豐田博物館 🏯</div>
+        <div class="day-date">4月16日（星期四）</div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">早餐</div><div class="it-time-val">8:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">☕ 名古屋早餐・Bon Bon</div>
+          <div class="it-sub">名古屋式早餐・布丁咖啡</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="tags"><span class="tag tag-pink">招牌：布丁、早餐套餐</span></div>
+        <a class="map-link" href="https://maps.google.com/maps?q=洋菓子喫茶ボンボン+名古屋" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">上午</div><div class="it-time-val">9:30</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🏯 名古屋城</div>
+          <div class="it-sub">開放至16:30・地鐵名城線名古屋城站</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">交通怎麼辦</div><div class="info-box-val">搭地鐵名城線→名古屋城站（15分），走7號出口，步行5分鐘</div></div>
+          <div class="info-box"><div class="info-box-label">重要提醒</div><div class="info-box-val">天守閣有電梯，不必爬樓梯！</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-amber">門票 500 日幣</span>
+          <span class="tag tag-blue">✓ 園內有廁所</span>
+          <span class="tag tag-green">✓ 有椅子休息</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=名古屋城" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">午餐</div><div class="it-time-val">11:30</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🥩 飛驒牛燒肉・馬喰一代（已訂位）</div>
+          <div class="it-sub">名古屋車站附近 アストラーレ2樓</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">交通怎麼辦</div><div class="info-box-val">地鐵名城線→名古屋站（15分），出站走3分鐘</div></div>
+          <div class="info-box"><div class="info-box-label">入座方式</div><div class="info-box-val">說「よやく（Yoyaku）」加名字，店員會帶位</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-amber">已訂位</span>
+          <span class="tag tag-pink">招牌：飛驒牛燒肉</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=馬喰一代+名古屋EAST" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">下午</div><div class="it-time-val">13:20</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🚗 豐田產業技術紀念館</div>
+          <div class="it-sub">開放至17:00・週一休館・大人1,000日幣</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">交通怎麼辦</div><div class="info-box-val">名古屋站搭地鐵東山線→亀島站（3分），步行8分鐘</div></div>
+          <div class="info-box"><div class="info-box-label">超貼心</div><div class="info-box-val">館內可借中文導覽機，不需要懂日文！</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-amber">門票 1,000 日幣</span>
+          <span class="tag tag-blue">✓ 館內有廁所</span>
+          <span class="tag tag-green">✓ 有休息椅</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=トヨタ産業技術記念館" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day-content" id="day-3" style="display:none">
+    <div class="day-hero">
+      <div class="day-num">Day 4</div>
+      <div>
+        <div class="day-title-text">水族館＋大須商圈 🐋</div>
+        <div class="day-date">4月17日（星期五）</div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">早餐</div><div class="it-time-val">8:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🥪 コンパル 榮店 早餐</div>
+          <div class="it-sub">名古屋老牌喫茶・炸蝦三明治</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row full">
+          <div class="info-box"><div class="info-box-label">小提醒</div><div class="info-box-val">可以外帶一份三明治，帶到水族館當午餐吃（省時又省錢）</div></div>
+        </div>
+        <div class="tags"><span class="tag tag-pink">招牌：炸蝦三明治</span></div>
+        <a class="map-link" href="https://maps.google.com/maps?q=コンパル+栄+名古屋" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">上午</div><div class="it-time-val">9:30</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🐬 名古屋港水族館</div>
+          <div class="it-sub">海豚・白鯨・虎鯨・超大水族館</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">交通怎麼辦</div><div class="info-box-val">地鐵名城線→名古屋港站（38分），跟著「水族館」指標走</div></div>
+          <div class="info-box"><div class="info-box-label">表演時間</div><div class="info-box-val">🐬 海豚 11:00<br>🐋 虎鯨 12:00<br>🤍 白鯨 13:00（北館3樓）</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-amber">門票 1,830 日幣</span>
+          <span class="tag tag-blue">✓ 館內有廁所</span>
+          <span class="tag tag-green">✓ 觀眾席有椅子</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=名古屋港水族館" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">下午</div><div class="it-time-val">14:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🚢 南極觀測船「富士號」</div>
+          <div class="it-sub">就在水族館旁邊，走路2分鐘</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row full">
+          <div class="info-box"><div class="info-box-label">重要提醒</div><div class="info-box-val">若走累了可以跳過，先回飯店休息也沒關係。體力優先！</div></div>
+        </div>
+        <div class="tags"><span class="tag tag-gray">步行2分鐘</span></div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">傍晚</div><div class="it-time-val">16:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🛍 榮＆大須商圈逛街</div>
+          <div class="it-sub">百貨・唐吉軻德・電視塔廣場</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">購物重點</div><div class="info-box-val">松坂屋B1（伴手禮）、唐吉軻德（藥妝零食）</div></div>
+          <div class="info-box"><div class="info-box-label">晚餐選擇</div><div class="info-box-val">矢場とん（味噌豬排）、山本屋總本家（味噌烏龍麵）</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-blue">✓ 百貨內有廁所</span>
+          <span class="tag tag-green">✓ 有休息椅</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=栄商圈+名古屋" target="_blank">📍 點我看榮商圈地圖</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day-content" id="day-4" style="display:none">
+    <div class="day-hero">
+      <div class="day-num">Day 5</div>
+      <div>
+        <div class="day-title-text">熱田神宮→返台 ✈</div>
+        <div class="day-date">4月18日（星期六）</div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">早上</div><div class="it-time-val">7:30</div></div>
+        <div class="it-title-area">
+          <div class="it-name">🍵 おかげ庵 早餐</div>
+          <div class="it-sub">和式早餐・飯店附近</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row full">
+          <div class="info-box"><div class="info-box-label">重要提醒</div><div class="info-box-val">9:00 前辦理退房（Check Out）。行李可寄放飯店，或帶去熱田神宮前7-11寄放</div></div>
+        </div>
+        <div class="tags"><span class="tag tag-amber">9:00 前退房</span></div>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">上午</div><div class="it-time-val">10:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">⛩ 熱田神宮</div>
+          <div class="it-sub">超過1,900年歷史的大神社・免費參觀</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row">
+          <div class="info-box"><div class="info-box-label">交通怎麼辦</div><div class="info-box-val">地鐵名城線→熱田神宮傳馬町站（15分），步行8分鐘，跟路標走</div></div>
+          <div class="info-box"><div class="info-box-label">重要提醒</div><div class="info-box-val">13:00 前必須離開，前往機場！請看好時間</div></div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-green">✓ 免費參觀</span>
+          <span class="tag tag-blue">✓ 境內有廁所</span>
+          <span class="tag tag-green">✓ 多處長椅</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=熱田神宮" target="_blank">📍 點我導航</a>
+      </div>
+    </div>
+
+    <div class="it-card">
+      <div class="it-top">
+        <div class="it-time"><div class="it-time-label">回程</div><div class="it-time-val">13:00</div></div>
+        <div class="it-title-area">
+          <div class="it-name">✈ 前往中部機場・返台</div>
+          <div class="it-sub">CX531・16:40起飛・18:50抵達桃園</div>
+        </div>
+      </div>
+      <div class="it-body">
+        <div class="info-row full">
+          <div class="info-box">
+            <div class="info-box-label">交通怎麼辦（2步驟）</div>
+            <div class="info-box-val">① 搭地鐵到金山站<br>② 轉搭「名鐵μSky 藍色特急」→中部國際機場（24分）</div>
+          </div>
+        </div>
+        <div class="tags">
+          <span class="tag tag-blue">✓ 機場有廁所</span>
+          <span class="tag tag-green">✓ 候機室有椅子</span>
+        </div>
+        <a class="map-link" href="https://maps.google.com/maps?q=中部国際空港+セントレア" target="_blank">📍 點我看機場地圖</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PANEL: 使用說明 ══════════ -->
+<div id="panel-usage" class="panel">
+  <p class="section-title">📖 使用說明書</p>
+  <p style="font-size:14px;color:var(--gray-muted);margin-bottom:16px;">給爸媽的貼心說明，請慢慢看 ❤️</p>
+
+  <div class="usage-card">
+    <div class="usage-num">1</div>
+    <div>
+      <div class="usage-title">每天早上，先按「今天是幾號」</div>
+      <div class="usage-desc">上面有五個圓形按鈕（Day 1～Day 5），用手指按「今天的號碼」，就會跳出今天要去的地方。按錯沒關係，隨時可以換。</div>
+    </div>
+  </div>
+
+  <div class="usage-card">
+    <div class="usage-num">2</div>
+    <div>
+      <div class="usage-title">看到綠色大按鈕「📍 點我導航」就按它</div>
+      <div class="usage-desc">每個地方下面都有綠色大按鈕，用手指輕碰它，手機就會自動打開地圖，跟著地圖走就好。地圖上有紅色大圖釘，那就是你要去的地方。</div>
+    </div>
+  </div>
+
+  <div class="usage-card">
+    <div class="usage-num">3</div>
+    <div>
+      <div class="usage-title">看顏色記重點，不用全部記</div>
+      <div class="usage-desc">
+        🟠 橘色標籤 = 要買票或已訂位<br>
+        🔵 藍色標籤 = 這裡有廁所<br>
+        🟢 綠色標籤 = 有椅子可以休息<br>
+        🩷 粉紅標籤 = 吃飯的資訊
+      </div>
+    </div>
+  </div>
+
+  <div class="usage-card">
+    <div class="usage-num">4</div>
+    <div>
+      <div class="usage-title">出門前，先讀「交通怎麼辦」那格</div>
+      <div class="usage-desc">每個景點下面都有「交通怎麼辦」，已經寫好「在哪搭車、搭什麼車、在哪下車」，一步一步跟著做就好。不需要看複雜地鐵圖。</div>
+    </div>
+  </div>
+
+  <div class="usage-card">
+    <div class="usage-num">5</div>
+    <div>
+      <div class="usage-title">覺得累了，隨時可以休息！</div>
+      <div class="usage-desc">時間表只是建議，不是考試。走累了就坐下；沒興趣的景點可以不去。最重要的是舒服、安全、開心。遇到不懂的，按下方「🆘 求助包」。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PANEL: 求助包 ══════════ -->
+<div id="panel-sos" class="panel">
+  <p class="section-title">🆘 緊急求助包</p>
+  <div class="notice-bar">👇 把需要的日文指給對方看就好！</div>
+
+  <div class="sos-grid">
+    <div class="sos-card"><div class="sos-jp">トイレ</div><div class="sos-zh">🚻 廁所</div><div class="sos-ro">To-i-re</div></div>
+    <div class="sos-card"><div class="sos-jp">病院</div><div class="sos-zh">🏥 醫院</div><div class="sos-ro">Byou-in</div></div>
+    <div class="sos-card"><div class="sos-jp">駅</div><div class="sos-zh">🚉 車站</div><div class="sos-ro">E-ki</div></div>
+    <div class="sos-card"><div class="sos-jp">いくら？</div><div class="sos-zh">💴 多少錢</div><div class="sos-ro">I-ku-ra</div></div>
+    <div class="sos-card"><div class="sos-jp">助けて！</div><div class="sos-zh">🆘 救命！</div><div class="sos-ro">Ta-su-ke-te</div></div>
+    <div class="sos-card"><div class="sos-jp">ホテル</div><div class="sos-zh">🏨 飯店</div><div class="sos-ro">Ho-te-ru</div></div>
+    <div class="sos-card"><div class="sos-jp">わかりません</div><div class="sos-zh">😅 我聽不懂</div><div class="sos-ro">Wa-ka-ri-ma-sen</div></div>
+    <div class="sos-card"><div class="sos-jp">ゆっくり話して</div><div class="sos-zh">🗣 請說慢點</div><div class="sos-ro">Yu-kku-ri ha-na-shi-te</div></div>
+  </div>
+
+  <div class="red-box">
+    <h3>🔴 迷路了，照這5步做</h3>
+    <div class="step-row"><div class="step-dot">1</div><div class="step-text">先找個地方站定，不要繼續走。深呼吸，不要慌。</div></div>
+    <div class="step-row"><div class="step-dot">2</div><div class="step-text">找最近的「便利商店（7-11或全家）」走進去，店員都很友善可以幫忙。</div></div>
+    <div class="step-row"><div class="step-dot">3</div><div class="step-text">打開手機Google地圖，搜尋「ガーランドホテル名古屋」，就能找到回飯店的路。</div></div>
+    <div class="step-row"><div class="step-dot">4</div><div class="step-text">找不到地圖？走進地鐵站，找穿制服的站員，把下面的飯店地址指給他看。</div></div>
+    <div class="step-row"><div class="step-dot">5</div><div class="step-text">實在不行，打電話給孩子！不用不好意思，這就是孩子要幫忙的時候。</div></div>
+  </div>
+
+  <div class="hotel-box">
+    <h3>📇 飯店地址卡</h3>
+    <div class="hotel-label">中文</div>
+    <div class="hotel-addr" style="margin-bottom:12px;">名古屋市中區榮3-9-6 名古屋 Garland Hotel</div>
+    <hr class="hotel-divider">
+    <div class="hotel-label">日文（給計程車司機或路人看）</div>
+    <div class="hotel-jp">名古屋市中区栄3-9-6<br>ガーランドホテル名古屋</div>
+    <br>
+    <a class="map-link" href="https://maps.google.com/maps?q=名古屋ガーランドホテル栄3-9-6" target="_blank">📍 點我導航回飯店</a>
+  </div>
+
+  <p style="font-size:15px;font-weight:700;margin-bottom:10px;">📞 緊急電話</p>
+  <div class="tel-grid">
+    <div class="tel-card"><div class="tel-num">110</div><div class="tel-desc">警察<br>（遇到危險）</div></div>
+    <div class="tel-card"><div class="tel-num">119</div><div class="tel-desc">救護車<br>（身體不舒服）</div></div>
+  </div>
+</div>
+
+<!-- ══════════ PANEL: 生存技巧 ══════════ -->
+<div id="panel-tips" class="panel">
+  <p class="section-title">💡 日本生存3大技巧</p>
+  <p style="font-size:14px;color:var(--gray-muted);margin-bottom:16px;">完全不懂日文，也能輕鬆旅行！</p>
+
+  <div class="tip-card">
+    <div class="tip-header">
+      <div class="tip-icon">📸</div>
+      <div class="tip-title">技巧1：用相機當翻譯官</div>
+    </div>
+    <div class="tip-desc">看到日文菜單、路標、說明牌，完全看不懂時，打開手機「相機」，鏡頭對著日文，手機就會自動把日文翻成中文顯示在畫面上！不需要按任何其他按鈕。</div>
+    <div class="tip-highlight">怎麼開啟：打開相機 → 對著日文字 → 點右下角「文字」按鈕（iPhone）</div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-header">
+      <div class="tip-icon">👆</div>
+      <div class="tip-title">技巧2：指圖點餐法</div>
+    </div>
+    <div class="tip-desc">日本餐廳幾乎都有「圖片菜單」或「食物模型」放在門口或桌上。你不需要說任何日文，只要用手指指著想吃的圖片，對服務員說「これ（ko-re）」（意思是「這個」），對方就懂了！</div>
+    <div class="tip-highlight">想要更多份：用手指比數量（1根手指＝1份）</div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-header">
+      <div class="tip-icon">🏪</div>
+      <div class="tip-title">技巧3：便利商店是你的好朋友</div>
+    </div>
+    <div class="tip-desc">日本的7-11、全家、Lawson，就像什麼都有的小天堂。迷路了可以進去問路；渴了餓了可以買東西；廁所乾淨可以免費用；需要現金可以在ATM領錢。</div>
+    <div class="tip-highlight">結帳只要把商品放到收銀台，直接把錢給對方就好，完全不需要說話！</div>
+  </div>
+
+  <div class="green-box">
+    <h3>🌟 給爸媽的最後叮嚀</h3>
+    <p>日本人非常友善，就算語言不通，只要比手畫腳、用手機翻譯，幾乎都能解決問題。孩子們已經幫你們把路都找好了，你們只需要照著走、享受旅途就好。<br><br>平安出發，快樂回家！❤️</p>
+  </div>
+</div>
+
+<!-- ══════════ BOTTOM NAV ══════════ -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchPanel('schedule',this)">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label">每日行程</span>
+  </button>
+  <button class="nav-btn" onclick="switchPanel('usage',this)">
+    <span class="nav-icon">📖</span>
+    <span class="nav-label">使用說明</span>
+  </button>
+  <button class="nav-btn" onclick="switchPanel('sos',this)">
+    <span class="nav-icon">🆘</span>
+    <span class="nav-label">緊急求助</span>
+  </button>
+  <button class="nav-btn" onclick="switchPanel('tips',this)">
+    <span class="nav-icon">💡</span>
+    <span class="nav-label">生存技巧</span>
+  </button>
+</nav>
+
+<script>
+function switchPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function switchDay(idx, btn) {
+  document.querySelectorAll('.day-content').forEach(d => d.style.display = 'none');
+  document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('day-' + idx).style.display = 'block';
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
